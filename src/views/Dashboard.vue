@@ -21,7 +21,7 @@
         <div class="stat-card">
           <div class="stat-content">
             <div class="stat-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
                 <path
                   d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
                 ></path>
@@ -37,7 +37,7 @@
         <div class="stat-card">
           <div class="stat-content">
             <div class="stat-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               </svg>
             </div>
@@ -51,7 +51,7 @@
         <div class="stat-card">
           <div class="stat-content">
             <div class="stat-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
                 <path
                   d="M9 7h6l2 9H7l2-9zM1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
                 ></path>

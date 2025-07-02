@@ -48,7 +48,7 @@
                       @click="viewChiqim(chiqim)"
                       class="action-btn view-btn"
                     >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                       </svg>
@@ -57,7 +57,7 @@
                       @click="deleteChiqim(chiqim)"
                       class="action-btn delete-btn"
                     >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
                         <polyline points="3,6 5,6 21,6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                       </svg>
