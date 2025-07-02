@@ -1,9 +1,8 @@
 <template>
-    <div class="dokonlar-container">
+    <div class="chiqimlar-container">
       <!-- Sidebar -->
       <Sidebar
-        :menu-items="menuItems"
-        :active-menu="'dokonlar'"
+        :active-menu="'chiqimlar'"
         :username="username"
         :user-role="userRole"
         @logout="handleLogout"
@@ -13,69 +12,54 @@
       <!-- Main Content -->
       <main class="main-content">
         <div class="content-header">
-          <h1 class="page-title">Dokonlar</h1>
+          <h1 class="page-title">Chiqimlar</h1>
           <button @click="showCreateModal = true" class="create-button">
-            Dokon yaratish
+            Chiqim qo'shish
           </button>
         </div>
   
-        <!-- Dokonlar Table -->
+        <!-- Chiqimlar Table -->
         <div class="table-container">
-          <table class="dokonlar-table">
+          <table class="chiqimlar-table">
             <thead>
               <tr>
                 <th>№</th>
-                <th>Dokon nomi</th>
-                <th>Telefon</th>
-                <th>Manzil</th>
-                <th>Qarzdorlik</th>
+                <th>Mahsulot</th>
+                <th>Novvoy</th>
+                <th>Narxi</th>
+                <th>Soni</th>
+                <th>Jami</th>
                 <th>Sana</th>
                 <th>Amallar</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(dokon, index) in dokonlar" :key="dokon.id">
+              <tr v-for="(chiqim, index) in chiqimlar" :key="chiqim.id">
                 <td>{{ index + 1 }}</td>
-                <td>{{ dokon.name }}</td>
-                <td>{{ dokon.phone }}</td>
-                <td>{{ dokon.address }}</td>
-                <td class="debt-amount" :class="{ 'has-debt': dokon.debt > 0 }">
-                  {{ formatCurrency(dokon.debt) }}
-                </td>
-                <td>{{ formatDate(dokon.createdAt) }}</td>
+                <td>{{ chiqim.productName }}</td>
+                <td>{{ chiqim.novvoyName }}</td>
+                <td>{{ formatCurrency(chiqim.price) }}</td>
+                <td>{{ chiqim.quantity }} dona</td>
+                <td class="total-amount">{{ formatCurrency(chiqim.price * chiqim.quantity) }}</td>
+                <td>{{ formatDate(chiqim.createdAt) }}</td>
                 <td>
                   <div class="action-buttons">
                     <button
-                      @click="viewDokon(dokon)"
+                      @click="viewChiqim(chiqim)"
                       class="action-btn view-btn"
                     >
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path
-                          d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-                        ></path>
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                       </svg>
                     </button>
                     <button
-                      @click="editDokon(dokon)"
-                      class="action-btn edit-btn"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M12 20h9"></path>
-                        <path
-                          d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
-                        ></path>
-                      </svg>
-                    </button>
-                    <button
-                      @click="deleteDokon(dokon)"
+                      @click="deleteChiqim(chiqim)"
                       class="action-btn delete-btn"
                     >
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <polyline points="3,6 5,6 21,6"></polyline>
-                        <path
-                          d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                        ></path>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                       </svg>
                     </button>
                   </div>
@@ -84,17 +68,17 @@
             </tbody>
           </table>
   
-          <div v-if="dokonlar.length === 0" class="empty-state">
-            <p>Hozircha dokonlar yo'q</p>
+          <div v-if="chiqimlar.length === 0" class="empty-state">
+            <p>Hozircha chiqimlar yo'q</p>
           </div>
         </div>
       </main>
   
-      <!-- Create Dokon Modal -->
+      <!-- Create Chiqim Modal -->
       <div v-if="showCreateModal" class="modal-overlay" @click="closeModal">
         <div class="modal-content" @click.stop>
           <div class="modal-header">
-            <h2>Dokon yaratish</h2>
+            <h2>Chiqim qo'shish</h2>
             <button style="width: 50px; height: 40px; all: unset; margin: 0; padding: 0;" @click="closeModal" class="close-button">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +90,6 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="lucide lucide-x-icon lucide-x"
               >
                 <path d="M18 6 6 18" />
                 <path d="m6 6 12 12" />
@@ -114,52 +97,64 @@
             </button>
           </div>
   
-          <form @submit.prevent="createDokon" class="modal-form">
+          <form @submit.prevent="createChiqim" class="modal-form">
             <div class="form-grid">
               <div class="form-group">
-                <label for="dokonName">Dokon nomi</label>
-                <input
-                  id="dokonName"
-                  type="text"
-                  v-model="newDokon.name"
-                  placeholder="Dokon nomini kiriting"
+                <label for="productName">Mahsulot</label>
+                <select
+                  id="productName"
+                  v-model="newChiqim.productName"
                   required
-                />
+                >
+                  <option value="">Mahsulotni tanlang</option>
+                  <option v-for="mahsulot in availableProducts" :key="mahsulot.id" :value="mahsulot.name">
+                    {{ mahsulot.name }} ({{ mahsulot.quantity }} dona)
+                  </option>
+                </select>
               </div>
   
               <div class="form-group">
-                <label for="dokonPhone">Telefon raqami</label>
-                <input
-                  id="dokonPhone"
-                  type="tel"
-                  v-model="newDokon.phone"
-                  placeholder="+998 90 123 45 67"
+                <label for="novvoyName">Novvoy</label>
+                <select
+                  id="novvoyName"
+                  v-model="newChiqim.novvoyName"
                   required
-                />
+                >
+                  <option value="">Novvoyni tanlang</option>
+                  <option v-for="novvoy in novvoylar" :key="novvoy.id" :value="novvoy.name">
+                    {{ novvoy.name }}
+                  </option>
+                </select>
               </div>
   
               <div class="form-group">
-                <label for="dokonAddress">Manzil</label>
+                <label for="chiqimPrice">Narxi (so'm)</label>
                 <input
-                  id="dokonAddress"
-                  type="text"
-                  v-model="newDokon.address"
-                  placeholder="Dokon manzilini kiriting"
-                  required
-                />
-              </div>
-  
-              <div class="form-group">
-                <label for="dokonDebt">Qarzdorlik (so'm)</label>
-                <input
-                  id="dokonDebt"
+                  id="chiqimPrice"
                   type="number"
-                  v-model="newDokon.debt"
+                  v-model="newChiqim.price"
                   placeholder="0"
                   min="0"
                   step="1000"
+                  required
                 />
               </div>
+  
+              <div class="form-group">
+                <label for="chiqimQuantity">Soni</label>
+                <input
+                  id="chiqimQuantity"
+                  type="number"
+                  v-model="newChiqim.quantity"
+                  placeholder="0"
+                  min="1"
+                  required
+                />
+              </div>
+            </div>
+  
+            <div class="total-preview" v-if="newChiqim.price && newChiqim.quantity">
+              <h3>Jami: {{ formatCurrency(newChiqim.price * newChiqim.quantity) }}</h3>
             </div>
   
             <div class="modal-actions">
@@ -167,7 +162,7 @@
                 Chiqish
               </button>
               <button type="submit" :disabled="isCreating" class="submit-button1">
-                {{ isCreating ? "Yaratilmoqda..." : "Yaratish" }}
+                {{ isCreating ? "Qo'shilmoqda..." : "Qo'shish" }}
               </button>
             </div>
           </form>
@@ -180,7 +175,7 @@
   import Sidebar from "../components/Sidebar.vue";
   
   export default {
-    name: "Dokonlar",
+    name: "Chiqimlar",
     components: {
       Sidebar,
     },
@@ -196,149 +191,102 @@
     },
     data() {
       return {
-        dokonlar: [],
+        chiqimlar: [],
         showCreateModal: false,
         isCreating: false,
-        newDokon: {
-          name: "",
-          phone: "",
-          address: "",
-          debt: 0,
+        newChiqim: {
+          productName: "",
+          novvoyName: "",
+          price: 0,
+          quantity: 1,
         },
-        menuItems: [
-          {
-            id: "dashboard",
-            name: "Dashboard",
-            iconPath: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-            view: "dashboard",
-          },
-          {
-            id: "managers",
-            name: "Managerlar",
-            iconPath: "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2",
-            view: "managers",
-            adminOnly: true,
-          },
-          {
-            id: 'novvoylar',
-            name: 'Novvoylar',
-            iconPath: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
-            view: 'novvoylar'
-          },
-          {
-            id: 'yetkazuvchilar',
-            name: 'Yetkazuvchilar',
-            iconPath: 'M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z',
-            view: 'yetkazuvchilar'
-          },
-          {
-            id: "dokonlar",
-            name: "Dokonlar",
-            iconPath:
-              "M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22ZM20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22ZM1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6",
-            view: "dokonlar",
-          },
-          {
-        id: 'omborxona',
-        name: 'Omborxona',
-        iconPath: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z M3 7l9-4 9 4',
-        view: 'omborxona'
-      },
-      {
-        id: 'chiqimlar',
-        name: 'Chiqimlar',
-        iconPath: 'M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M12.5 7a4 4 0 11-8 0 4 4 0 018 0z M16 11l2 2 4-4',
-        view: 'chiqimlar'
-      },
-      {
-          id: 'non-turlari',
-          name: 'Non turlari',
-          iconPath: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
-          view: 'non-turlari'
-        }
-        ],
+        availableProducts: [],
+        novvoylar: [],
       };
     },
     mounted() {
-      this.loadDokonlar();
+      this.loadChiqimlar();
+      this.loadAvailableProducts();
+      this.loadNovvoylar();
     },
     methods: {
-      loadDokonlar() {
-        this.dokonlar = JSON.parse(localStorage.getItem("dokonlar") || "[]");
+      loadChiqimlar() {
+        this.chiqimlar = JSON.parse(localStorage.getItem("chiqimlar") || "[]");
       },
-      async createDokon() {
+      loadAvailableProducts() {
+        const omborxona = JSON.parse(localStorage.getItem("omborxona") || "[]");
+        this.availableProducts = omborxona.filter(mahsulot => mahsulot.status === 'bor' && mahsulot.quantity > 0);
+      },
+      loadNovvoylar() {
+        this.novvoylar = JSON.parse(localStorage.getItem("novvoylar") || "[]");
+      },
+      async createChiqim() {
         this.isCreating = true;
   
         await new Promise((resolve) => setTimeout(resolve, 1000));
   
-        const newDokon = {
+        const newChiqim = {
           id: Date.now().toString(),
-          name: this.newDokon.name,
-          phone: this.newDokon.phone,
-          address: this.newDokon.address,
-          debt: Number(this.newDokon.debt) || 0,
+          productName: this.newChiqim.productName,
+          novvoyName: this.newChiqim.novvoyName,
+          price: Number(this.newChiqim.price),
+          quantity: Number(this.newChiqim.quantity),
           createdAt: new Date().toISOString(),
         };
   
-        this.dokonlar.push(newDokon);
-        localStorage.setItem("dokonlar", JSON.stringify(this.dokonlar));
+        this.chiqimlar.push(newChiqim);
+        localStorage.setItem("chiqimlar", JSON.stringify(this.chiqimlar));
+  
+        // Omborxonadan mahsulot sonini kamaytirish
+        this.updateProductQuantity(newChiqim.productName, newChiqim.quantity);
   
         this.$emit("show-notification", {
-          message: "Dokon muvaffaqiyatli yaratildi!",
+          message: "Chiqim muvaffaqiyatli qo'shildi!",
           type: "success",
         });
   
         this.closeModal();
         this.isCreating = false;
+        this.loadAvailableProducts(); // Yangilash
       },
-      viewDokon(dokon) {
-        alert(
-          `Dokon ma'lumotlari:
-  Nomi: ${dokon.name}
-  Telefon: ${dokon.phone}
-  Manzil: ${dokon.address}
-  Qarzdorlik: ${this.formatCurrency(dokon.debt)}
-  Yaratilgan: ${this.formatDate(dokon.createdAt)}`
-        );
-      },
-      editDokon(dokon) {
-        const newName = prompt("Yangi dokon nomi:", dokon.name);
-        if (newName && newName.trim()) {
-          const newPhone = prompt("Yangi telefon:", dokon.phone);
-          if (newPhone && newPhone.trim()) {
-            const newAddress = prompt("Yangi manzil:", dokon.address);
-            if (newAddress && newAddress.trim()) {
-              const newDebt = prompt("Yangi qarzdorlik:", dokon.debt);
-              
-              dokon.name = newName.trim();
-              dokon.phone = newPhone.trim();
-              dokon.address = newAddress.trim();
-              dokon.debt = Number(newDebt) || 0;
-              
-              localStorage.setItem("dokonlar", JSON.stringify(this.dokonlar));
-  
-              this.$emit("show-notification", {
-                message: "Dokon ma'lumotlari yangilandi!",
-                type: "success",
-              });
-            }
+      updateProductQuantity(productName, usedQuantity) {
+        const omborxona = JSON.parse(localStorage.getItem("omborxona") || "[]");
+        const product = omborxona.find(p => p.name === productName);
+        
+        if (product) {
+          product.quantity -= usedQuantity;
+          if (product.quantity <= 0) {
+            product.status = 'yoq';
+            product.quantity = 0;
           }
+          localStorage.setItem("omborxona", JSON.stringify(omborxona));
         }
       },
-      deleteDokon(dokon) {
-        if (confirm(`${dokon.name} dokonini o'chirishni xohlaysizmi?`)) {
-          this.dokonlar = this.dokonlar.filter((d) => d.id !== dokon.id);
-          localStorage.setItem("dokonlar", JSON.stringify(this.dokonlar));
+      viewChiqim(chiqim) {
+        alert(
+          `Chiqim ma'lumotlari:
+  Mahsulot: ${chiqim.productName}
+  Novvoy: ${chiqim.novvoyName}
+  Narxi: ${this.formatCurrency(chiqim.price)}
+  Soni: ${chiqim.quantity} dona
+  Jami: ${this.formatCurrency(chiqim.price * chiqim.quantity)}
+  Sana: ${this.formatDate(chiqim.createdAt)}`
+        );
+      },
+      deleteChiqim(chiqim) {
+        if (confirm(`Bu chiqimni o'chirishni xohlaysizmi?`)) {
+          this.chiqimlar = this.chiqimlar.filter((c) => c.id !== chiqim.id);
+          localStorage.setItem("chiqimlar", JSON.stringify(this.chiqimlar));
   
           this.$emit("show-notification", {
-            message: "Dokon o'chirildi!",
+            message: "Chiqim o'chirildi!",
             type: "success",
           });
         }
       },
       closeModal() {
         this.showCreateModal = false;
-        this.newDokon = { name: "", phone: "", address: "", debt: 0 };
+        this.newChiqim = { productName: "", novvoyName: "", price: 0, quantity: 1 };
       },
       handleLogout() {
         localStorage.removeItem("isLoggedIn");
@@ -359,7 +307,7 @@
   </script>
   
   <style scoped>
-  .dokonlar-container {
+  .chiqimlar-container {
     display: flex;
     min-height: 100vh;
     background-color: white;
@@ -406,12 +354,12 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   
-  .dokonlar-table {
+  .chiqimlar-table {
     width: 100%;
     border-collapse: collapse;
   }
   
-  .dokonlar-table th {
+  .chiqimlar-table th {
     background-color: #f8fafc;
     padding: 16px;
     text-align: left;
@@ -420,22 +368,19 @@
     border-bottom: 1px solid #e2e8f0;
   }
   
-  .dokonlar-table td {
+  .chiqimlar-table td {
     padding: 16px;
     border-bottom: 1px solid #e2e8f0;
     color: #1e293b;
   }
   
-  .dokonlar-table tr:last-child td {
+  .chiqimlar-table tr:last-child td {
     border-bottom: none;
   }
   
-  .debt-amount {
+  .total-amount {
     font-weight: 600;
-  }
-  
-  .debt-amount.has-debt {
-    color: #ef4444;
+    color: #059669;
   }
   
   .action-buttons {
@@ -462,15 +407,6 @@
   
   .view-btn:hover {
     background-color: #2563eb;
-  }
-  
-  .edit-btn {
-    background-color: #10b981;
-    color: white;
-  }
-  
-  .edit-btn:hover {
-    background-color: #059669;
   }
   
   .delete-btn {
@@ -569,7 +505,8 @@
     font-size: 16px;
   }
   
-  .form-group input {
+  .form-group input,
+  .form-group select {
     height: 48px;
     padding: 0 16px;
     border: 1px solid #d1d5db;
@@ -579,10 +516,25 @@
     box-sizing: border-box;
   }
   
-  .form-group input:focus {
+  .form-group input:focus,
+  .form-group select:focus {
     outline: none;
     border-color: #6366f1;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+  
+  .total-preview {
+    text-align: center;
+    margin: 30px 0;
+    padding: 20px;
+    background-color: #f0f9ff;
+    border-radius: 8px;
+    border: 2px solid #0ea5e9;
+  }
+  
+  .total-preview h3 {
+    color: #0369a1;
+    font-size: 24px;
   }
   
   .modal-actions {
@@ -636,7 +588,7 @@
   }
   
   @media (max-width: 768px) {
-    .dokonlar-container {
+    .chiqimlar-container {
       flex-direction: column;
     }
   
@@ -655,12 +607,12 @@
       gap: 20px;
     }
   
-    .dokonlar-table {
+    .chiqimlar-table {
       font-size: 14px;
     }
   
-    .dokonlar-table th,
-    .dokonlar-table td {
+    .chiqimlar-table th,
+    .chiqimlar-table td {
       padding: 12px 8px;
     }
   }

@@ -61,6 +61,45 @@
       @navigate="navigateTo"
       @show-notification="showNotification"
     />
+
+    <!-- Omborxona -->
+    <Omborxona 
+      v-else-if="currentView === 'omborxona'"
+      :username="currentUser.username"
+      :user-role="currentUser.role"
+      @logout="handleLogout"
+      @navigate="navigateTo"
+      @show-notification="showNotification"
+    />
+
+    <!-- Chiqimlar -->
+    <Chiqimlar 
+      v-else-if="currentView === 'chiqimlar'"
+      :username="currentUser.username"
+      :user-role="currentUser.role"
+      @logout="handleLogout"
+      @navigate="navigateTo"
+      @show-notification="showNotification"
+    />
+
+    <!-- Non Turlari -->
+    <NonTurlari 
+      v-else-if="currentView === 'nonturlari'"
+      :username="currentUser.username"
+      :user-role="currentUser.role"
+      @logout="handleLogout"
+      @navigate="navigateTo"
+      @show-notification="showNotification"
+    />
+    <!-- Sozlamalar -->
+    <Sozlamalar 
+      v-else-if="currentView === 'sozlamalar'"
+      :username="currentUser.username"
+      :user-role="currentUser.role"
+      @logout="handleLogout"
+      @navigate="navigateTo"
+      @show-notification="showNotification"
+    />
   </div>
 </template>
 
@@ -71,6 +110,10 @@ import Managers from './views/Managers.vue'
 import Novvoylar from './views/Novvoylar.vue'
 import Dokonlar from './views/Dokonlar.vue'
 import Yetkazuvchilar from './views/Yetkazuvchilar.vue'
+import Omborxona from './views/Omborxona.vue'
+import Chiqimlar from './views/Chiqimlar.vue'
+import NonTurlari from './views/NonTurlari.vue'
+import Sozlamalar from './views/Sozlamalar.vue'
 
 export default {
   name: 'App',
@@ -80,7 +123,11 @@ export default {
     Managers,
     Novvoylar,
     Dokonlar,
-    Yetkazuvchilar
+    Yetkazuvchilar,
+    Omborxona,
+    Chiqimlar,
+    NonTurlari,
+    Sozlamalar
   },
   data() {
     return {
@@ -98,6 +145,7 @@ export default {
   },
   mounted() {
     this.checkLoginStatus()
+    console.log('App mounted, current view:', this.currentView)
   },
   methods: {
     checkLoginStatus() {
@@ -122,6 +170,7 @@ export default {
       this.currentView = 'login'
     },
     navigateTo(view) {
+      console.log('Navigating to:', view)
       this.currentView = view
     },
     showNotification(data) {

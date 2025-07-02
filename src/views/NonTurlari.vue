@@ -1,9 +1,9 @@
 <template>
-    <div class="dokonlar-container">
+    <div class="non-turlari-container"> 
+      
       <!-- Sidebar -->
       <Sidebar
-        :menu-items="menuItems"
-        :active-menu="'dokonlar'"
+        :active-menu="'non-turlari'"
         :username="username"
         :user-role="userRole"
         @logout="handleLogout"
@@ -13,69 +13,69 @@
       <!-- Main Content -->
       <main class="main-content">
         <div class="content-header">
-          <h1 class="page-title">Dokonlar</h1>
+          <h1 class="page-title">Non turlari</h1>
           <button @click="showCreateModal = true" class="create-button">
-            Dokon yaratish
+            Non turi qo'shish
           </button>
         </div>
   
-        <!-- Dokonlar Table -->
+        <!-- Non Turlari Table -->
         <div class="table-container">
-          <table class="dokonlar-table">
+          <table class="non-turlari-table">
             <thead>
               <tr>
                 <th>№</th>
-                <th>Dokon nomi</th>
-                <th>Telefon</th>
-                <th>Manzil</th>
-                <th>Qarzdorlik</th>
+                <th>Non nomi</th>
+                <th>Tan narxi</th>
+                <th>Dokon narxi</th>
+                <th>Toyxona narxi</th>
+                <th>Qop narxi</th>
+                <th>Holati</th>
                 <th>Sana</th>
                 <th>Amallar</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(dokon, index) in dokonlar" :key="dokon.id">
+              <tr v-for="(non, index) in nonTurlari" :key="non.id">
                 <td>{{ index + 1 }}</td>
-                <td>{{ dokon.name }}</td>
-                <td>{{ dokon.phone }}</td>
-                <td>{{ dokon.address }}</td>
-                <td class="debt-amount" :class="{ 'has-debt': dokon.debt > 0 }">
-                  {{ formatCurrency(dokon.debt) }}
+                <td>{{ non.name }}</td>
+                <td>{{ formatCurrency(non.tanNarxi) }}</td>
+                <td>{{ formatCurrency(non.dokonNarxi) }}</td>
+                <td>{{ formatCurrency(non.toyxonaNarxi) }}</td>
+                <td>{{ formatCurrency(non.qopNarxi) }}</td>
+                <td>
+                  <span class="status-badge" :class="non.status === 'bor' ? 'status-available' : 'status-unavailable'">
+                    {{ non.status === 'bor' ? 'Bor' : 'Yo\'q' }}
+                  </span>
                 </td>
-                <td>{{ formatDate(dokon.createdAt) }}</td>
+                <td>{{ formatDate(non.createdAt) }}</td>
                 <td>
                   <div class="action-buttons">
                     <button
-                      @click="viewDokon(dokon)"
+                      @click="viewNon(non)"
                       class="action-btn view-btn"
                     >
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path
-                          d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-                        ></path>
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                       </svg>
                     </button>
                     <button
-                      @click="editDokon(dokon)"
+                      @click="editNon(non)"
                       class="action-btn edit-btn"
                     >
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M12 20h9"></path>
-                        <path
-                          d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
-                        ></path>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                       </svg>
                     </button>
                     <button
-                      @click="deleteDokon(dokon)"
+                      @click="deleteNon(non)"
                       class="action-btn delete-btn"
                     >
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <polyline points="3,6 5,6 21,6"></polyline>
-                        <path
-                          d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                        ></path>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                       </svg>
                     </button>
                   </div>
@@ -84,17 +84,17 @@
             </tbody>
           </table>
   
-          <div v-if="dokonlar.length === 0" class="empty-state">
-            <p>Hozircha dokonlar yo'q</p>
+          <div v-if="nonTurlari.length === 0" class="empty-state">
+            <p>Hozircha non turlari yo'q</p>
           </div>
         </div>
       </main>
   
-      <!-- Create Dokon Modal -->
+      <!-- Create Non Modal -->
       <div v-if="showCreateModal" class="modal-overlay" @click="closeModal">
         <div class="modal-content" @click.stop>
           <div class="modal-header">
-            <h2>Dokon yaratish</h2>
+            <h2>Non turi qo'shish</h2>
             <button style="width: 50px; height: 40px; all: unset; margin: 0; padding: 0;" @click="closeModal" class="close-button">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +106,6 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="lucide lucide-x-icon lucide-x"
               >
                 <path d="M18 6 6 18" />
                 <path d="m6 6 12 12" />
@@ -114,50 +113,81 @@
             </button>
           </div>
   
-          <form @submit.prevent="createDokon" class="modal-form">
+          <form @submit.prevent="createNon" class="modal-form">
             <div class="form-grid">
               <div class="form-group">
-                <label for="dokonName">Dokon nomi</label>
+                <label for="nonName">Non nomi</label>
                 <input
-                  id="dokonName"
+                  id="nonName"
                   type="text"
-                  v-model="newDokon.name"
-                  placeholder="Dokon nomini kiriting"
+                  v-model="newNon.name"
+                  placeholder="Non nomini kiriting"
                   required
                 />
               </div>
   
               <div class="form-group">
-                <label for="dokonPhone">Telefon raqami</label>
-                <input
-                  id="dokonPhone"
-                  type="tel"
-                  v-model="newDokon.phone"
-                  placeholder="+998 90 123 45 67"
+                <label for="nonStatus">Holati</label>
+                <select
+                  id="nonStatus"
+                  v-model="newNon.status"
                   required
-                />
+                >
+                  <option value="">Holatni tanlang</option>
+                  <option value="bor">Bor</option>
+                  <option value="yoq">Yo'q</option>
+                </select>
               </div>
   
               <div class="form-group">
-                <label for="dokonAddress">Manzil</label>
+                <label for="tanNarxi">Tan narxi (so'm)</label>
                 <input
-                  id="dokonAddress"
-                  type="text"
-                  v-model="newDokon.address"
-                  placeholder="Dokon manzilini kiriting"
-                  required
-                />
-              </div>
-  
-              <div class="form-group">
-                <label for="dokonDebt">Qarzdorlik (so'm)</label>
-                <input
-                  id="dokonDebt"
+                  id="tanNarxi"
                   type="number"
-                  v-model="newDokon.debt"
+                  v-model="newNon.tanNarxi"
                   placeholder="0"
                   min="0"
-                  step="1000"
+                  step="100"
+                  required
+                />
+              </div>
+  
+              <div class="form-group">
+                <label for="dokonNarxi">Dokon narxi (so'm)</label>
+                <input
+                  id="dokonNarxi"
+                  type="number"
+                  v-model="newNon.dokonNarxi"
+                  placeholder="0"
+                  min="0"
+                  step="100"
+                  required
+                />
+              </div>
+  
+              <div class="form-group">
+                <label for="toyxonaNarxi">Toyxona narxi (so'm)</label>
+                <input
+                  id="toyxonaNarxi"
+                  type="number"
+                  v-model="newNon.toyxonaNarxi"
+                  placeholder="0"
+                  min="0"
+                  step="100"
+                  required
+                />
+              </div>
+  
+              <div class="form-group">
+                <label for="qopNarxi">Qop narxi (so'm)</label>
+                <input
+                  id="qopNarxi"
+                  type="number"
+                  v-model="newNon.qopNarxi"
+                  placeholder="0"
+                  min="0"
+                  step="100"
+                  required
                 />
               </div>
             </div>
@@ -167,7 +197,7 @@
                 Chiqish
               </button>
               <button type="submit" :disabled="isCreating" class="submit-button1">
-                {{ isCreating ? "Yaratilmoqda..." : "Yaratish" }}
+                {{ isCreating ? "Qo'shilmoqda..." : "Qo'shish" }}
               </button>
             </div>
           </form>
@@ -180,7 +210,7 @@
   import Sidebar from "../components/Sidebar.vue";
   
   export default {
-    name: "Dokonlar",
+    name: "NonTurlari",
     components: {
       Sidebar,
     },
@@ -196,149 +226,116 @@
     },
     data() {
       return {
-        dokonlar: [],
+        nonTurlari: [],
         showCreateModal: false,
         isCreating: false,
-        newDokon: {
+        newNon: {
           name: "",
-          phone: "",
-          address: "",
-          debt: 0,
+          tanNarxi: 0,
+          dokonNarxi: 0,
+          toyxonaNarxi: 0,
+          qopNarxi: 0,
+          status: "",
         },
-        menuItems: [
-          {
-            id: "dashboard",
-            name: "Dashboard",
-            iconPath: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-            view: "dashboard",
-          },
-          {
-            id: "managers",
-            name: "Managerlar",
-            iconPath: "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2",
-            view: "managers",
-            adminOnly: true,
-          },
-          {
-            id: 'novvoylar',
-            name: 'Novvoylar',
-            iconPath: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
-            view: 'novvoylar'
-          },
-          {
-            id: 'yetkazuvchilar',
-            name: 'Yetkazuvchilar',
-            iconPath: 'M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z',
-            view: 'yetkazuvchilar'
-          },
-          {
-            id: "dokonlar",
-            name: "Dokonlar",
-            iconPath:
-              "M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22ZM20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22ZM1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6",
-            view: "dokonlar",
-          },
-          {
-        id: 'omborxona',
-        name: 'Omborxona',
-        iconPath: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z M3 7l9-4 9 4',
-        view: 'omborxona'
-      },
-      {
-        id: 'chiqimlar',
-        name: 'Chiqimlar',
-        iconPath: 'M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M12.5 7a4 4 0 11-8 0 4 4 0 018 0z M16 11l2 2 4-4',
-        view: 'chiqimlar'
-      },
-      {
-          id: 'non-turlari',
-          name: 'Non turlari',
-          iconPath: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
-          view: 'non-turlari'
-        }
-        ],
       };
     },
     mounted() {
-      this.loadDokonlar();
+      console.log('NonTurlari component mounted')
+      this.loadNonTurlari();
     },
     methods: {
-      loadDokonlar() {
-        this.dokonlar = JSON.parse(localStorage.getItem("dokonlar") || "[]");
+      loadNonTurlari() {
+        this.nonTurlari = JSON.parse(localStorage.getItem("nonTurlari") || "[]");
       },
-      async createDokon() {
+      async createNon() {
         this.isCreating = true;
   
         await new Promise((resolve) => setTimeout(resolve, 1000));
   
-        const newDokon = {
+        const newNon = {
           id: Date.now().toString(),
-          name: this.newDokon.name,
-          phone: this.newDokon.phone,
-          address: this.newDokon.address,
-          debt: Number(this.newDokon.debt) || 0,
+          name: this.newNon.name,
+          tanNarxi: Number(this.newNon.tanNarxi),
+          dokonNarxi: Number(this.newNon.dokonNarxi),
+          toyxonaNarxi: Number(this.newNon.toyxonaNarxi),
+          qopNarxi: Number(this.newNon.qopNarxi),
+          status: this.newNon.status,
           createdAt: new Date().toISOString(),
         };
   
-        this.dokonlar.push(newDokon);
-        localStorage.setItem("dokonlar", JSON.stringify(this.dokonlar));
+        this.nonTurlari.push(newNon);
+        localStorage.setItem("nonTurlari", JSON.stringify(this.nonTurlari));
   
         this.$emit("show-notification", {
-          message: "Dokon muvaffaqiyatli yaratildi!",
+          message: "Non turi muvaffaqiyatli qo'shildi!",
           type: "success",
         });
   
         this.closeModal();
         this.isCreating = false;
       },
-      viewDokon(dokon) {
+      viewNon(non) {
         alert(
-          `Dokon ma'lumotlari:
-  Nomi: ${dokon.name}
-  Telefon: ${dokon.phone}
-  Manzil: ${dokon.address}
-  Qarzdorlik: ${this.formatCurrency(dokon.debt)}
-  Yaratilgan: ${this.formatDate(dokon.createdAt)}`
+          `Non ma'lumotlari:
+  Nomi: ${non.name}
+  Tan narxi: ${this.formatCurrency(non.tanNarxi)}
+  Dokon narxi: ${this.formatCurrency(non.dokonNarxi)}
+  Toyxona narxi: ${this.formatCurrency(non.toyxonaNarxi)}
+  Qop narxi: ${this.formatCurrency(non.qopNarxi)}
+  Holati: ${non.status === 'bor' ? 'Bor' : 'Yo\'q'}
+  Qo'shilgan: ${this.formatDate(non.createdAt)}`
         );
       },
-      editDokon(dokon) {
-        const newName = prompt("Yangi dokon nomi:", dokon.name);
+      editNon(non) {
+        const newName = prompt("Yangi non nomi:", non.name);
         if (newName && newName.trim()) {
-          const newPhone = prompt("Yangi telefon:", dokon.phone);
-          if (newPhone && newPhone.trim()) {
-            const newAddress = prompt("Yangi manzil:", dokon.address);
-            if (newAddress && newAddress.trim()) {
-              const newDebt = prompt("Yangi qarzdorlik:", dokon.debt);
-              
-              dokon.name = newName.trim();
-              dokon.phone = newPhone.trim();
-              dokon.address = newAddress.trim();
-              dokon.debt = Number(newDebt) || 0;
-              
-              localStorage.setItem("dokonlar", JSON.stringify(this.dokonlar));
+          const newTanNarxi = prompt("Yangi tan narxi:", non.tanNarxi);
+          if (newTanNarxi !== null) {
+            const newDokonNarxi = prompt("Yangi dokon narxi:", non.dokonNarxi);
+            if (newDokonNarxi !== null) {
+              const newToyxonaNarxi = prompt("Yangi toyxona narxi:", non.toyxonaNarxi);
+              if (newToyxonaNarxi !== null) {
+                const newQopNarxi = prompt("Yangi qop narxi:", non.qopNarxi);
+                if (newQopNarxi !== null) {
+                  non.name = newName.trim();
+                  non.tanNarxi = Number(newTanNarxi) || 0;
+                  non.dokonNarxi = Number(newDokonNarxi) || 0;
+                  non.toyxonaNarxi = Number(newToyxonaNarxi) || 0;
+                  non.qopNarxi = Number(newQopNarxi) || 0;
+                  
+                  localStorage.setItem("nonTurlari", JSON.stringify(this.nonTurlari));
   
-              this.$emit("show-notification", {
-                message: "Dokon ma'lumotlari yangilandi!",
-                type: "success",
-              });
+                  this.$emit("show-notification", {
+                    message: "Non ma'lumotlari yangilandi!",
+                    type: "success",
+                  });
+                }
+              }
             }
           }
         }
       },
-      deleteDokon(dokon) {
-        if (confirm(`${dokon.name} dokonini o'chirishni xohlaysizmi?`)) {
-          this.dokonlar = this.dokonlar.filter((d) => d.id !== dokon.id);
-          localStorage.setItem("dokonlar", JSON.stringify(this.dokonlar));
+      deleteNon(non) {
+        if (confirm(`${non.name} non turini o'chirishni xohlaysizmi?`)) {
+          this.nonTurlari = this.nonTurlari.filter((n) => n.id !== non.id);
+          localStorage.setItem("nonTurlari", JSON.stringify(this.nonTurlari));
   
           this.$emit("show-notification", {
-            message: "Dokon o'chirildi!",
+            message: "Non turi o'chirildi!",
             type: "success",
           });
         }
       },
       closeModal() {
         this.showCreateModal = false;
-        this.newDokon = { name: "", phone: "", address: "", debt: 0 };
+        this.newNon = { 
+          name: "", 
+          tanNarxi: 0, 
+          dokonNarxi: 0, 
+          toyxonaNarxi: 0, 
+          qopNarxi: 0, 
+          status: "" 
+        };
       },
       handleLogout() {
         localStorage.removeItem("isLoggedIn");
@@ -359,7 +356,7 @@
   </script>
   
   <style scoped>
-  .dokonlar-container {
+  .non-turlari-container {
     display: flex;
     min-height: 100vh;
     background-color: white;
@@ -406,36 +403,47 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   
-  .dokonlar-table {
+  .non-turlari-table {
     width: 100%;
     border-collapse: collapse;
   }
   
-  .dokonlar-table th {
+  .non-turlari-table th {
     background-color: #f8fafc;
     padding: 16px;
     text-align: left;
     font-weight: 600;
     color: #374151;
     border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
   }
   
-  .dokonlar-table td {
+  .non-turlari-table td {
     padding: 16px;
     border-bottom: 1px solid #e2e8f0;
     color: #1e293b;
+    font-size: 14px;
   }
   
-  .dokonlar-table tr:last-child td {
+  .non-turlari-table tr:last-child td {
     border-bottom: none;
   }
   
-  .debt-amount {
-    font-weight: 600;
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
   }
   
-  .debt-amount.has-debt {
-    color: #ef4444;
+  .status-available {
+    background-color: #10b981;
+    color: white;
+  }
+  
+  .status-unavailable {
+    background-color: #ef4444;
+    color: white;
   }
   
   .action-buttons {
@@ -453,6 +461,11 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+  }
+  
+  .action-btn svg {
+    width: 16px;
+    height: 16px;
   }
   
   .view-btn {
@@ -569,7 +582,8 @@
     font-size: 16px;
   }
   
-  .form-group input {
+  .form-group input,
+  .form-group select {
     height: 48px;
     padding: 0 16px;
     border: 1px solid #d1d5db;
@@ -579,7 +593,8 @@
     box-sizing: border-box;
   }
   
-  .form-group input:focus {
+  .form-group input:focus,
+  .form-group select:focus {
     outline: none;
     border-color: #6366f1;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
@@ -636,7 +651,7 @@
   }
   
   @media (max-width: 768px) {
-    .dokonlar-container {
+    .non-turlari-container {
       flex-direction: column;
     }
   
@@ -655,13 +670,13 @@
       gap: 20px;
     }
   
-    .dokonlar-table {
-      font-size: 14px;
+    .non-turlari-table {
+      font-size: 12px;
     }
   
-    .dokonlar-table th,
-    .dokonlar-table td {
-      padding: 12px 8px;
+    .non-turlari-table th,
+    .non-turlari-table td {
+      padding: 8px 4px;
     }
   }
   </style>

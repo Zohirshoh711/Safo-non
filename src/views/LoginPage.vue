@@ -109,7 +109,8 @@ export default {
       await new Promise(resolve => setTimeout(resolve, 1000))
 
       // Check admin credentials
-      if (this.username === 'admin' && this.password === '1234') {
+      const adminPassword = localStorage.getItem('adminPassword') || '1234';
+      if (this.username === 'admin' && this.password === adminPassword) {
         localStorage.setItem('isLoggedIn', 'true')
         localStorage.setItem('username', this.username)
         localStorage.setItem('userRole', 'admin')
@@ -124,7 +125,9 @@ export default {
 
       // Check manager credentials
       const managers = JSON.parse(localStorage.getItem('managers') || '[]')
-      const manager = managers.find(m => m.username === this.username && m.password === this.password)
+      const manager = managers.find(m => 
+        (m.username === this.username || m.name === this.username) && m.password === this.password
+      )
       
       if (manager) {
         localStorage.setItem('isLoggedIn', 'true')

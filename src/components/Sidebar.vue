@@ -23,7 +23,7 @@
           href="#"
           class="nav-item"
           :class="{ 'nav-item-active': item.id === activeMenu }"
-          @click.prevent="$emit('navigate', item.view)"
+          @click.prevent="handleMenuClick(item)"
         >
           <svg
             class="nav-icon"
@@ -57,10 +57,6 @@
 export default {
   name: "Sidebar",
   props: {
-    menuItems: {
-      type: Array,
-      required: true,
-    },
     activeMenu: {
       type: String,
       required: true,
@@ -74,6 +70,71 @@ export default {
       required: true,
     },
   },
+  
+  data() {
+    return {
+      menuItems: [
+        {
+          id: 'dashboard',
+          name: 'Dashboard',
+          iconPath: 'm2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
+          view: 'dashboard'
+        },
+        {
+          id: 'managers',
+          name: 'Managerlar',
+          iconPath: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+          view: 'managers',
+          adminOnly: true
+        },
+        {
+          id: 'novvoylar',
+          name: 'Novvoylar',
+          iconPath: 'M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z',
+          view: 'novvoylar'
+        },
+        {
+          id: 'dokonlar',
+          name: 'Dokonlar',
+          iconPath: 'M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22ZM20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22ZM1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6',
+          view: 'dokonlar'
+        },
+        {
+          id: 'yetkazuvchilar',
+          name: 'Yetkazuvchilar',
+          iconPath: 'M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12',
+          view: 'yetkazuvchilar'
+
+        },
+        {
+          id: 'omborxona',
+          name: 'Omborxona',
+          iconPath: 'M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m1.5.5-1.5-.5M6.75 7.364V3h-3v18m3-13.636 10.5-3.819',
+          view: 'omborxona'
+          
+
+        },
+        {
+          id: 'chiqimlar',
+          name: 'Chiqimlar',
+          iconPath: 'M7 7h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14',
+          view: 'chiqimlar'
+        },
+        {
+          id: 'non-turlari',
+          name: 'Non turlari',
+          iconPath: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
+          view: 'nonturlari'
+        },
+        {
+          id: 'sozlamalar',
+          name: 'Sozlamalar',
+          iconPath: 'M12 15a3 3 0 100-6 3 3 0 000 6z M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z',
+          view: 'sozlamalar'
+        }
+      ]
+    }
+  },
   computed: {
     filteredMenuItems() {
       return this.menuItems.filter((item) => {
@@ -84,6 +145,12 @@ export default {
       });
     },
   },
+  methods: {
+    handleMenuClick(item) {
+      console.log('Menu clicked:', item.id, 'View:', item.view)
+      this.$emit('navigate', item.view)
+    }
+  }
 };
 </script>
 
@@ -137,13 +204,13 @@ export default {
 .nav-item-active {
   background-color: #6598FF;
   color: white;
-
   border-radius: 12px;
 }
 
 .nav-icon {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
+  color: black;
 }
 
 .sidebar-footer {
